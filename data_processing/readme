@@ -1,0 +1,31 @@
+I. DATA Cleaning
+
+    1. Load data
+    2. Insert data in panda
+    3. Lowercasing
+    4. Remove punctuation, numbers
+    5. Tokenization
+    6. Lemmatization and Stemming
+    7. Remove STOP WORDS
+
+II. Topic Modeling
+
+III. Features extraction - Numeric
+
+    1. No of punctuation signs -
+    2. No words capitalized -
+    3. No of ! -
+    4. No of ? -
+    5. No pozitive words (after the data cleaning process) (Pozitive word - polarity >=0.1) -
+    6. No negative words (after the data cleaning process) (Negative word - polarity <=-0.1) -
+    7. length of the review (No of words) -
+    8. No of poz./neg. nouns, adjectives, adverbs and verbes -
+    9. No of poz/neg hashtags - , capitalized words -
+    10. NO hashtags - , urls -
+    11. Polarity sums for nouns, adjectives, adverbs or verbs -
+    12. % of capitalized text -
+    13. Overall subjectivity -
+    14. Overall polarity -
+
+
+IV. Data Normalization
