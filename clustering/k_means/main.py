@@ -5,7 +5,7 @@ from clustering.k_means.KMeans.MyKMeans import MyKMeans
 import pandas as pd
 import numpy as np
 
-path_to_csv = "C:/datamining/newDataset.csv"
+path_to_csv = "D:/Tot/UBB/SDI/Data mining/Proiect/newDataset.csv"
 
 
 def add_metrics(average_list, max_list, k_means, true_values):
