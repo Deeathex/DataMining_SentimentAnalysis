@@ -15,7 +15,7 @@ def get_no_punctuation_signs(text):
 
 
 def get_no_words_capitalized(text):
-    k = 0;
+    k = 0
     words = text.split(" ")
     for word in words:
         chars = list(word)

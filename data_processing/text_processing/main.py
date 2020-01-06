@@ -74,4 +74,4 @@ if __name__ == "__main__":
 
     data_normalization_and_saving(data_features)
 
-    topic_modeling(data_clean)
+    # topic_modeling(data_clean)
