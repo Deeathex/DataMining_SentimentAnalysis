@@ -1,3 +1,6 @@
+from sklearn.decomposition import IncrementalPCA
+from sklearn.preprocessing import StandardScaler
+
 from clustering.k_means.KMeans.AbstractKMeans import AbstractKMeans
 
 import sys
@@ -154,6 +157,29 @@ class MyKMeans(AbstractKMeans):
 
             # move on to the next iteration
             iteration_count += 1
+
+    def predict(self, predicted_data):
+        # scale attributes
+        scaler = StandardScaler()
+        rows_scaled = scaler.fit_transform(predicted_data)
+
+        # apply PCA (reduce multidimensional data to 2 dimensions)
+        pca = IncrementalPCA(n_components=2, batch_size=200)
+        rows_scaled = pca.fit_transform(rows_scaled)
+
+        # check the class for every row
+        predicted_classes = []
+        for i in range(0, len(rows_scaled)):
+            min_distance_value = sys.maxsize
+            min_distance_centroid = -1
+            for j in range(0, len(self.__centroids)):
+                current_distance = self.distance(rows_scaled[i], self.__centroids[j])
+                if current_distance < min_distance_value:
+                    min_distance_value = current_distance
+                    min_distance_centroid = j
+            predicted_classes += [min_distance_centroid]
+
+        return predicted_classes
 
     def display_clusters(self):
         plot.scatter(self._rows_pca[:, 0], self._rows_pca[:, 1],

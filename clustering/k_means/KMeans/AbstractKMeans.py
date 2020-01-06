@@ -41,6 +41,9 @@ class AbstractKMeans:
     def display_clusters(self):
         pass
 
+    def predict(self, predicted_data):
+        pass
+
     def get_completeness_score(self, true_values):
         return completeness_score(true_values, self._predicted_values)
 
@@ -54,3 +57,11 @@ class AbstractKMeans:
         print('Completeness score: ' + str(self.get_completeness_score(true_values)))
         print('Homogeneity score: ' + str(self.get_homogeneity_score(true_values)))
         print('V-measure score: ' + str(self.get_v_measure_score(true_values)))
+
+    @staticmethod
+    def get_score(true_values, predicted_values):
+        correct_value_count = 0
+        for i in range(0, len(true_values)):
+            if true_values[i] == predicted_values[i]:
+                correct_value_count += 1
+        return correct_value_count / len(true_values)

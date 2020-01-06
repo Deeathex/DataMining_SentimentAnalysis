@@ -39,7 +39,8 @@ def main():
     dataset.display_data_metrics()
 
     # initialize the average values and the iteration count
-    iteration_count = 50
+    iteration_count = 2
+    split_data_train_test = True
     average_sklearn = [0, 0, 0]
     average_my_euclidean = [0, 0, 0]
     average_my_manhattan = [0, 0, 0]
@@ -52,24 +53,52 @@ def main():
     averages = [average_my_euclidean, average_my_manhattan, average_my_minkowski]
     max_values = [max_my_euclidean, max_my_manhattan, max_my_minkowski]
 
+    # separate into training and testing sets
+    train_processed_rows = processed_rows[:1800]
+    train_processed_class = processed_class[:1800]
+
+    test_processed_rows = processed_rows[1800:]
+    test_processed_class = processed_class[1800:]
+
+    best_value_sklearn = 0
+    best_value_my_distance = [0, 0, 0]
+    average_accuracy_sklearn = 0
+    average_accuracy_my_distance = [0, 0, 0]
+
     # start the computation
     for i in range(0, iteration_count):
         print('Current iteration: ' + str(i + 1))
         # sklearn
         k_means = SklearnKMeans(number_of_clusters=3, max_iterations=600)
-        execute_k_means(k_means, processed_rows)
-        add_metrics(average_sklearn, max_sklearn, k_means, processed_class)
+        execute_k_means(k_means, train_processed_rows if split_data_train_test else processed_rows)
+        add_metrics(average_sklearn, max_sklearn, k_means, train_processed_class if split_data_train_test else processed_class)
+        if split_data_train_test:
+            test_predicted_values = k_means.predict(test_processed_rows)
+            current_score = k_means.get_score(test_processed_class, test_predicted_values)
+            average_accuracy_sklearn += current_score
+            if current_score > best_value_sklearn:
+                best_value_sklearn = current_score
 
         # myKMeans
         for j in range(0, len(distances)):
             k_means = MyKMeans(number_of_clusters=3, max_iterations=600, distance_type=distances[j])
-            execute_k_means(k_means, processed_rows)
-            add_metrics(averages[j], max_values[j], k_means, processed_class)
+            execute_k_means(k_means, train_processed_rows if split_data_train_test else processed_rows)
+            add_metrics(averages[j], max_values[j], k_means, train_processed_class if split_data_train_test else processed_class)
+            if split_data_train_test:
+                test_predicted_values = k_means.predict(test_processed_rows)
+                current_score = k_means.get_score(test_processed_class, test_predicted_values)
+                average_accuracy_my_distance[j] += current_score
+                if current_score > best_value_my_distance[j]:
+                    best_value_my_distance[j] = current_score
 
-    # calculate the actual average
+    # calculate the actual averages
     average_sklearn = [x / iteration_count for x in average_sklearn]
     for i in range(0, len(averages)):
         averages[i] = [x / iteration_count for x in averages[i]]
+    if split_data_train_test:
+        average_accuracy_sklearn = average_accuracy_sklearn / iteration_count
+        for j in range(0, len(distances)):
+            average_accuracy_my_distance[j] = average_accuracy_my_distance[j] / iteration_count
 
     # do some preprocessing on the names of the metrics
     distances += ["sklearn"]
@@ -89,6 +118,20 @@ def main():
     print()
     print("Best values, " + str(iteration_count) + " iterations:")
     print(data_frame)
+
+    # print the predicted values if we have them
+    if split_data_train_test:
+        average_values = np.array(average_accuracy_my_distance + [average_accuracy_sklearn]).transpose()
+        data_frame = pd.DataFrame(average_values, index=distances, columns=["accuracy"])
+        print()
+        print("Average values, " + str(iteration_count) + " iterations:")
+        print(data_frame)
+
+        best_values = np.array(best_value_my_distance + [best_value_sklearn]).transpose()
+        data_frame = pd.DataFrame(best_values, index=distances, columns=["accuracy"])
+        print()
+        print("Best values, " + str(iteration_count) + " iterations:")
+        print(data_frame)
 
 
 if __name__ == '__main__':
