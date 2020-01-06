@@ -67,7 +67,7 @@ def main():
 
     # start the computation
     for i in range(0, iteration_count):
-        print('Current iteration: ' + str(i + 1))
+        print('Current iteration: ' + str(i + 1) + "/" + str(iteration_count))
         # sklearn
         k_means = SklearnKMeans(number_of_clusters=3, max_iterations=600)
         execute_k_means(k_means, train_processed_rows if split_data_train_test else processed_rows)
