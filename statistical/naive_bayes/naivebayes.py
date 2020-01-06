@@ -3,6 +3,7 @@ from math import exp
 from math import pi
 from math import sqrt
 
+
 class NaiveBayes:
 
     def load_data(self, filename):
@@ -20,11 +21,9 @@ class NaiveBayes:
         self.__str_column_to_int(dataset, len(dataset[0]) - 1)
         return dataset
 
-
     def __str_column_to_float(self, dataset, column):
         for row in dataset:
             row[column] = float(row[column].strip())
-
 
     def __str_column_to_int(self, dataset, column):
         class_values = [row[column] for row in dataset]
@@ -37,7 +36,6 @@ class NaiveBayes:
             row[column] = lookup[row[column]]
         return lookup
 
-
     # Split the dataset by class values, returns a dictionary
     def __separate_by_class(self, dataset):
         separated = {}
@@ -49,23 +47,19 @@ class NaiveBayes:
             separated[class_value].append(vector)
         return separated
 
-
     def __mean(self, numbers):
         return sum(numbers) / float(len(numbers))
-
 
     def __stdev(self, numbers):
         avg = self.__mean(numbers)
         variance = sum([(x - avg) ** 2 for x in numbers]) / float(len(numbers) - 1)
         return sqrt(variance)
 
-
     # Calculate the mean, stdev and count for each column in a dataset
     def __summarize_dataset(self, dataset):
         summaries = [(self.__mean(column), self.__stdev(column), len(column)) for column in zip(*dataset)]
         summaries.pop(-1)
         return summaries
-
 
     # Split dataset by class then calculate statistics for each row
     def create_model(self, dataset):
@@ -75,12 +69,10 @@ class NaiveBayes:
             model[class_value] = self.__summarize_dataset(rows)
         return model
 
-
     # Calculate the Gaussian probability distribution function for x
     def __calculate_probability(self, x, mean, stdev):
         exponent = exp(-((x - mean) ** 2 / (2 * stdev ** 2)))
         return (1 / (sqrt(2 * pi) * stdev)) * exponent
-
 
     # Calculate the probabilities of predicting each class for a given row
     def __calculate_class_probabilities(self, summaries, row):
@@ -93,7 +85,6 @@ class NaiveBayes:
                 probabilities[class_value] *= self.__calculate_probability(row[i], mean, stdev)
         return probabilities
 
-
     # Predict the class for a given row
     def predict(self, model, row):
         probabilities = self.__calculate_class_probabilities(model, row)
@@ -103,4 +94,3 @@ class NaiveBayes:
                 best_prob = probability
                 best_label = class_value
         return best_label
-

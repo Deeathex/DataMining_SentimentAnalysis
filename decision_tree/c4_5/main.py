@@ -1,6 +1,6 @@
-from c4_5 import *
-from tree import *
-import config as config
+from decision_tree.c4_5.c4_5 import *
+from decision_tree.c4_5.tree import *
+import decision_tree.c4_5.config as config
 import csv
 
 c = None
@@ -9,8 +9,8 @@ c = None
 # 									  "humidity": c.findThresholdForContinuousAttribute(2)}
 specific_values_for_attributes = {}
 
-
 queue = []
+
 
 def read(splitIndex):
     with open('newDataset.csv') as csv_file:
@@ -48,12 +48,14 @@ def read(splitIndex):
                     config.testing.append([entity, label])
                 line_count += 1
 
+
 def trainingSetForEveryValueForSpecificAttribute(values, index, fromL):
     result = []
     for value in values:
         trainingsWithSpecificValue = [[t[0], t[1]] for t in fromL if t[0][index] == value]
         result.append(trainingsWithSpecificValue)
     return result
+
 
 def testing(root):
     noTests = 0
@@ -64,7 +66,8 @@ def testing(root):
             noCorrect += 1
         noTests += 1
 
-    print (noCorrect/noTests * 100)
+    print(noCorrect / noTests * 100)
+
 
 def main_c4_52():
     best = c.findBest()
@@ -86,12 +89,14 @@ def trainingSetForEveryValueForSpecificAttributeContinuous(value, index, fromL):
     result.append(trainingsgt)
     return result
 
+
 def reinitialize():
     index_attribute = 0
     c.setTraining(config.training)
     for attribute in config.attributes:
         specific_values_for_attributes[attribute] = c.findThresholdForContinuousAttribute(index_attribute)
         index_attribute += 1
+
 
 def c4_52(current, best):
     next_level = [best]
@@ -120,7 +125,7 @@ def c4_52(current, best):
                             current.addChild(Node(None, specific_values[k] + i, None, sett))
                         i += 0.00001
             for node in current.getChildren():
-                if node.getOutput() == None:
+                if node.getOutput() is None:
                     try:
                         temp = node.getList()
                         val = float(node.getEdge())
@@ -132,7 +137,7 @@ def c4_52(current, best):
                         if not (temp == []):
                             c.setTraining(temp)
                             best1 = c.findBest()
-                            if best1 == None:
+                            if best1 is None:
                                 node.setOutput(config.labels[0])
                                 continue
                             newNode = Node(None, node.getEdge(), best1)
@@ -158,12 +163,13 @@ def c4_52(current, best):
             next_level.pop(0)
             best = next_level[0]
             print(best)
-            if best == None:
+            if best is None:
                 break
             current, config.training = queue[0]
             queue.pop(0)
         except IndexError:
             break
+
 
 def verifyTest(node, test):
     if node.getOutput():
@@ -180,7 +186,7 @@ def verifyTest(node, test):
         if value <= node.getChildren()[0].getEdge():
             return verifyTest(node.getChildren()[0], test)
         else:
-            if(len(node.getChildren())>1):
+            if len(node.getChildren()) > 1:
                 return verifyTest(node.getChildren()[1], test)
             else:
                 return verifyTest(node.getChildren()[0], test)
@@ -190,8 +196,9 @@ def verifyTest(node, test):
             if n.getEdge() == value:
                 return verifyTest(n, test)
 
+
 if __name__ == "__main__":
-    noTrainingEntities = int(input("Number of training entites:"))
+    noTrainingEntities = int(input("Number of training entities:"))
     read(noTrainingEntities)
     c = C4_5(config.training, [], config.labels, config.attributes)
     main_c4_52()

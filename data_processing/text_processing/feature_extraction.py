@@ -1,6 +1,7 @@
 import string
 from textblob import TextBlob
 import nltk
+
 nltk.download('punkt')
 nltk.download('brown')
 
@@ -205,6 +206,7 @@ def get_sum_polarity_adjectives(text):
     word_tags = get_words_for_tag(text, 'JJ')
     return get_sum_polarity_words(" ".join(word_tags))
 
+
 def feature_extraction(initial_data, data_clean, data_without_lemmas):
     data_features = data_clean.copy()
 
@@ -242,7 +244,6 @@ def feature_extraction(initial_data, data_clean, data_without_lemmas):
     for index, row in data_clean.iterrows():
         arrayNoPozitiveWords.append(get_no_pozitive_words(row['Text']))
         arrayNoNegativeWords.append(get_no_negative_words(row['Text']))
-
 
     for index, row in data_without_lemmas.iterrows():
         arrayNoPozNouns.append(get_no_poz_nouns(row['Text']))

@@ -8,7 +8,7 @@ def generateId():
     return uuid4()
 
 
-def vizualize_topics(ldamodel, sw):
+def visualize_topics(ldamodel, sw):
     cols = [color for name, color in mcolors.TABLEAU_COLORS.items()]  # more colors: 'mcolors.XKCD_COLORS'
 
     cloud = WordCloud(stopwords=sw,
@@ -26,7 +26,7 @@ def vizualize_topics(ldamodel, sw):
 
     for i, ax in enumerate(axes.flatten()):
         fig.add_subplot(ax)
-        if (i < len(topics)):
+        if i < len(topics):
             topic_words = dict(topics[i][1])
             cloud.generate_from_frequencies(topic_words, max_font_size=300)
             plt.gca().imshow(cloud)

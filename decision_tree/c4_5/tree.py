@@ -1,5 +1,5 @@
 class Node:
-    def __init__(self, output, edge, name, list = None):
+    def __init__(self, output, edge, name, list=None):
         self.__children = []
         self.__output = output
         self.__edge = edge
@@ -30,6 +30,7 @@ class Node:
     def getList(self):
         return self.__list
 
+
 class Tree:
     def __init__(self, root):
         self.__root = root
@@ -37,6 +38,3 @@ class Tree:
 
     def getCurrent(self):
         return self.__current
-
-
-

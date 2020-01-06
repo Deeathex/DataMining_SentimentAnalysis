@@ -39,7 +39,7 @@ def main():
     dataset.display_data_metrics()
 
     # initialize the average values and the iteration count
-    iteration_count = 2
+    iteration_count = 100
     split_data_train_test = True
     average_sklearn = [0, 0, 0]
     average_my_euclidean = [0, 0, 0]

@@ -3,13 +3,15 @@ from nltk.corpus import stopwords
 from data_processing.text_processing.data_preprocessing import data_cleaning, clean_text_round1, clean_text_round2, \
     clean_text_remove_numbers, tokenization, lemmatization
 from data_processing.text_processing.feature_extraction import feature_extraction
-from data_processing.text_processing.utils import vizualize_topics
+from data_processing.text_processing.utils import visualize_topics
 
 import pandas as pd
 import gensim
 from gensim import corpora
 import nltk
+
 nltk.download('stopwords')
+
 
 def generate_corpus(data):
     corpus = []
@@ -27,7 +29,7 @@ def topic_modeling(data_clean):
     ldamodel = Lda(doc_term_matrix, num_topics=4, id2word=dictionary, passes=40)
     print(ldamodel.print_topics())
     sw = stopwords.words('english')
-    vizualize_topics(ldamodel, sw)
+    visualize_topics(ldamodel, sw)
 
 
 def data_normalization_and_saving(data_features):

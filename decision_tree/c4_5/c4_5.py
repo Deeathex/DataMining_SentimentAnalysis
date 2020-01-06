@@ -1,5 +1,7 @@
 import numpy as np
-import config as config
+from decision_tree.c4_5 import config
+
+
 class C4_5:
     def __init__(self, training, testing, possible_outputs, attributes):
         self.__training = training
@@ -26,8 +28,8 @@ class C4_5:
         how_many_for_every_class, how_many_training_examples = self.howManyForEveryClass()
         result = 0.0
         for key in how_many_for_every_class.keys():
-            aux = how_many_for_every_class[key]/how_many_training_examples
-            result += -aux*np.log2(aux)
+            aux = how_many_for_every_class[key] / how_many_training_examples
+            result += -aux * np.log2(aux)
         return result
 
     def preprocess(self, attribute_index):
@@ -77,7 +79,7 @@ class C4_5:
             for tempKey in temp.keys():
                 if not (tempKey == "counter"):
                     aux = temp[tempKey] / temp["counter"]
-                    if not(aux == 0):
+                    if not (aux == 0):
                         result += -aux * np.log2(aux)
             entropyValues[key] = {"counter": temp["counter"], "value": result}
 
@@ -88,15 +90,15 @@ class C4_5:
         temp = how_many_for_every_value[value]
         result = 0.0
         for key in temp.keys():
-            if not(key == "counter"):
-                result += -temp[key]/len(self.__training)
+            if not (key == "counter"):
+                result += -temp[key] / len(self.__training)
         return result
 
     def splitInfoForSpecificAttribute(self, attribute_index):
         prsValues = self.prs(attribute_index)
         result = 0.0
         for key in prsValues:
-            aux = prsValues[key]["counter"]/(len(self.__training))
+            aux = prsValues[key]["counter"] / (len(self.__training))
             result += -aux * np.log2(aux)
         return result
 
@@ -104,14 +106,14 @@ class C4_5:
         result = self.entropy()
         prsValues = self.prs(attribute_index)
         for key in prsValues:
-            result += -(prsValues[key]["counter"]/totalNoTrainingExamples) * prsValues[key]["value"]
+            result += -(prsValues[key]["counter"] / totalNoTrainingExamples) * prsValues[key]["value"]
         return result
 
     def gainRatioForSpecificAttribute(self, attribute_index):
         totalNoTrainingExamples = len(self.__training)
         gain = self.gainForSpecificAttribute(attribute_index, totalNoTrainingExamples)
         split = self.splitInfoForSpecificAttribute(attribute_index)
-        return [gain, gain/split]
+        return [gain, gain / split]
 
     def entropyForContinuousAttribute_lte_gt(self, value, training, attribute_index):
         lte_gt = {"let": {"noValue": 0}, "gt": {"noValue": 0}}
@@ -134,27 +136,30 @@ class C4_5:
         entropy_d = {"let": 0, "gt": 0, "no_let": 0, "no_gt": 0}
         let = lte_gt["let"]
         for key in let.keys():
-            if not(key == "noValue"):
-                entropy_d["let"] += -let[key]/let["noValue"]*np.log2(let[key]/let["noValue"])
+            if not (key == "noValue"):
+                entropy_d["let"] += -let[key] / let["noValue"] * np.log2(let[key] / let["noValue"])
 
         gt = lte_gt["gt"]
         for key in gt.keys():
-            if not(key == "noValue"):
-                entropy_d["gt"] += -gt[key]/gt["noValue"]*np.log2(gt[key]/gt["noValue"])
+            if not (key == "noValue"):
+                entropy_d["gt"] += -gt[key] / gt["noValue"] * np.log2(gt[key] / gt["noValue"])
         entropy_d["no_let"] = let["noValue"]
         entropy_d["no_gt"] = gt["noValue"]
         return entropy_d
 
     def gainForContinuousAttribute(self, entropy_d, totalNoTrainingExamples):
-        result = self.entropy() - entropy_d["let"]*(entropy_d["no_let"]/totalNoTrainingExamples) - entropy_d["gt"]*(entropy_d["no_gt"]/totalNoTrainingExamples)
+        result = self.entropy() - entropy_d["let"] * (entropy_d["no_let"] / totalNoTrainingExamples) - entropy_d[
+            "gt"] * (entropy_d["no_gt"] / totalNoTrainingExamples)
         return result
 
     def splitInfoForContinuousAttribute(self, entropy_d, totalNoTrainingExamples):
         result = 0
-        if not(entropy_d["no_let"] == 0):
-            result += - (entropy_d["no_let"] / totalNoTrainingExamples) * np.log2(entropy_d["no_let"] / totalNoTrainingExamples)
-        if not(entropy_d["no_gt"] == 0):
-            result += - (entropy_d["no_gt"]/totalNoTrainingExamples) * np.log2(entropy_d["no_gt"]/totalNoTrainingExamples)
+        if not (entropy_d["no_let"] == 0):
+            result += - (entropy_d["no_let"] / totalNoTrainingExamples) * np.log2(
+                entropy_d["no_let"] / totalNoTrainingExamples)
+        if not (entropy_d["no_gt"] == 0):
+            result += - (entropy_d["no_gt"] / totalNoTrainingExamples) * np.log2(
+                entropy_d["no_gt"] / totalNoTrainingExamples)
         return result
 
     def gainRatioForContinuosAttribute(self, value, attribute_index, training):
@@ -163,7 +168,7 @@ class C4_5:
         split = self.splitInfoForContinuousAttribute(entropy_d, len(training))
         if split == 0.0:
             return [gain, 0.0]
-        return [gain, gain/split]
+        return [gain, gain / split]
 
     def findThresholdForContinuousAttribute(self, attribute_index):
         training = sorted(self.__training, key=
